@@ -19,8 +19,8 @@ export class CallBox extends React.Component{
     	messages: [],
 	    width: 320,
 	    height: 240,
-	    x: 600,
-	    y: 0,
+	    x: window.innerWidth/2-160,
+	    y: window.innerHeight/2-240,
 		};
 	}
 

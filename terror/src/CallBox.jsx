@@ -17,9 +17,9 @@ export class CallBox extends React.Component{
     	term: "$>",
     	written: "",
     	messages: [],
-	    width: 640,
-	    height: 480,
-	    x: 0,
+	    width: 320,
+	    height: 240,
+	    x: 600,
 	    y: 0,
 		};
 	}
@@ -48,9 +48,10 @@ export class CallBox extends React.Component{
    };
 
 	llamaSpeak = async () => {
-		const newWritten = this.state.written + `${this.state.term}` + "\n";
 
+		const newWritten = this.state.written + `${this.state.term}` + "\n";
 		var holdMessages = this.state.messages
+		
 		holdMessages.push({role: 'user', content: `${this.state.term}` });
 		this.setState({messages: holdMessages})
 
@@ -72,7 +73,14 @@ export class CallBox extends React.Component{
 
 	onKeyPressHandler = async (e) => {
 		if (e.key === 'Enter') {
-			this.llamaSpeak();
+			switch(this.state.term){
+			case("clear"): this.setState({term: "$>", written: ""});
+				break;
+			case("$>clear"): this.setState({term: "$>", written: ""});
+				break;
+
+			default: this.llamaSpeak();
+			}
 		}
  };
 
@@ -99,6 +107,7 @@ export class CallBox extends React.Component{
 
 		<Rnd
 			className="content"
+			cancel="callBoxTitleCloseBox"
 			dragHandleClassName="headerTitle"
 			minWidth={340}
 			minHeight={200}
@@ -113,22 +122,23 @@ export class CallBox extends React.Component{
 		    });
 		  }}
 		>
-	  {/*<div id="callBox" className="content" style={{visibility: this.props.isCalling, width: this.state.width + 'px', height: this.state.height + 'px'}}>*/}
+
 	    <div id="callBoxTitle" className="headerTitle">
+	      <div className="topTitleLine"></div>
 	      <div className="titleLines"></div>
 	      <div className="titleLines"></div>
 	      <div className="titleLines"></div>
 	      <div className="titleLines"></div>
 	      <div className="titleLines"></div>
-	      <div className="titleLines"></div>
+	      <div className="bottomTitleLines"></div>
 	      <div id="callBoxTitleHandle" className="callTitle">CALL</div>
-	      <div id="callBoxTitleCloseBox" className="control-box close-box" onClick={this.closeWindow} >
-	      <a id="callBoxTitleCloseInner" className="control-box-inner"></a>
+	      <div id="callBoxTitleCloseBox" className="control-box close-box" onClick={this.closeWindow}>
+	      <a id="callBoxTitleCloseInner" className="control-box-inner" ></a>
 	      </div>
 	    </div>
-	    <div id="talk" style={{color:"#666"}}>
-	    	<pre>{this.state.written}</pre>
-	    </div>
+	    {/*<div id="talk" style={{color:"#666"}}>*/}
+	    	<pre id="talk">{this.state.written}</pre>
+	    {/*</div>*/}
 	    <div>
 	    	{/*<p className="blink">~@</p>*/}
 	    	<input

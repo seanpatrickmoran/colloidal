@@ -25,7 +25,6 @@ export default class Window extends React.Component{
 
 
   getTheBoys(){
-    console.log('hey')
     this.setState({isCalling : "visible"})    
 
     // const fetchPromise = fetch(`http://localhost:8080/api/talk`);
@@ -47,9 +46,10 @@ export default class Window extends React.Component{
     }  
   }
 
-  closeWindow(){
-    this.setState({visCallBox: "hidden"});
-  }
+  // closeWindow(){
+  //   console.log('here')
+  //   this.setState({visCallBox: "hidden"});
+  // }
 
 
   render (){
@@ -68,7 +68,7 @@ export default class Window extends React.Component{
       <a href="/" style={{backgroundColor: "transparent", fontSize: "12px", color:"#666"}}>Go Home</a>
       </div>
 
-      <div id="callBoxDiv">
+      <div id="callBoxDiv" style={{visibility: this.state.isCalling}}>
         <CallBox isCalling={this.state.isCalling} handleCallChange={this.handleCallChange}/>
       </div>
 

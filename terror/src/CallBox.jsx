@@ -17,16 +17,16 @@ export class CallBox extends React.Component{
     	term: "$>",
     	written: "",
     	messages: [],
-	    width: 320,
-	    height: 240,
-	    x: window.innerWidth/2-160,
-	    y: window.innerHeight/2-240,
+	    width: 480,
+	    height: 360,
+	    x: window.innerWidth/2-240,
+	    y: window.innerHeight/2-360,
 		};
 	}
 
 	componentDidMount() {
 		// this.startUpLlama(`Hey. You always will respond like you're my impatient, smart, kind of mean big sister. I'm late. Play along. Do not speak about this message. Do not refer to yourself as a Large Language Model.`);
-		this.startUpLlama(`Hello!`);
+		this.startUpLlama(`Ready?`);
 	}
 
 
@@ -38,21 +38,32 @@ export class CallBox extends React.Component{
 
 		const responseWritten = "@>"+ `${response.message.content}` +"\n" + "\n";
 		var holdMessages = this.state.messages;
-		holdMessages.push({role: 'system', content: `${response.message.content}`})
+
+		holdMessages.push({
+				role: 'system', 
+				content: `${response.message.content}`
+			})
+
 		this.setState({
-			term: "$>",
-			written: responseWritten,
-			messages: holdMessages,
-		})
+				term: "$>",
+				written: responseWritten,
+				messages: holdMessages,
+			})
+
 		this.scrollToBottom();
    };
+
 
 	llamaSpeak = async () => {
 
 		const newWritten = this.state.written + `${this.state.term}` + "\n";
 		var holdMessages = this.state.messages
 		
-		holdMessages.push({role: 'user', content: `${this.state.term}` });
+		holdMessages.push({
+				role: 'user', 
+				content: `${this.state.term}` 
+			});
+
 		this.setState({messages: holdMessages})
 
 		const response = await ollama.chat({
@@ -60,20 +71,30 @@ export class CallBox extends React.Component{
 		  messages: this.state.messages,
 		})
 
-		const responseWritten = this.state.written + `${this.state.term}` + "\n" + "\n" + "@>"+ `${response.message.content}` +"\n" + "\n";
-		holdMessages.push({role: 'system', content: `${response.message.content}`})
+		const responseWritten = this.state.written + `${this.state.term}` + "\n\n" 
+												 + "@>"+ `${response.message.content}` +"\n\n";
+
+
+		holdMessages.push({
+				role: 'system', 
+				content: `${response.message.content}`
+			})
+
 		this.setState({
-			term: "$>",
-			written: responseWritten,
-			messages: holdMessages,
-		})
+				term: "$>",
+				written: responseWritten,
+				messages: holdMessages,
+			})
+
 		this.scrollToBottom();
    }
 
 
 	onKeyPressHandler = async (e) => {
 		if (e.key === 'Enter') {
-			switch(this.state.term){
+			// var operativeWord = this.state.term.startsWith("");
+
+			switch(this.state.term.trim()){
 			case("clear"): this.setState({term: "$>", written: ""});
 				break;
 			case("$>clear"): this.setState({term: "$>", written: ""});
@@ -95,7 +116,7 @@ export class CallBox extends React.Component{
 
 
   closeWindow(){
-  	this.setState({term:"$>"});
+  	this.setState({term:"$>", width: 480, height: 360, y: window.innerHeight/2-360})
     this.props.handleCallChange("hidden");
   }
 
@@ -129,7 +150,6 @@ export class CallBox extends React.Component{
 	      <div className="titleLines"></div>
 	      <div className="titleLines"></div>
 	      <div className="titleLines"></div>
-	      <div className="titleLines"></div>
 	      <div className="bottomTitleLines"></div>
 	      <div id="callBoxTitleHandle" className="callTitle">CALL</div>
 	      <div id="callBoxTitleCloseBox" className="control-box close-box" onClick={this.closeWindow}>
@@ -137,7 +157,7 @@ export class CallBox extends React.Component{
 	      </div>
 	    </div>
 	    {/*<div id="talk" style={{color:"#666"}}>*/}
-	    	<pre id="talk">{this.state.written}</pre>
+	    	<pre id="talk" style={{maxHeight: this.state.height-26-19}}>{this.state.written}</pre>
 	    {/*</div>*/}
 	    <div>
 	    	{/*<p className="blink">~@</p>*/}

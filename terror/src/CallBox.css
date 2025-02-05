@@ -7,11 +7,16 @@
     height: 26px;
 }
 #callBoxTitleHandle{
-  margin-top: -17px;
+  margin-top: -20px;
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;  
 }
 
 #callBoxTitleCloseBox{
-  margin-top: -20px;
+  margin-top: -21px;
   margin-left: -85%; 
   z-index: 4;
   }
@@ -28,18 +33,18 @@
 .topTitleLine{
     margin-top: 4px;
     position: relative;
-    width: 100%;
+    width: 98%;
     height: 1px;
     z-index: 2;
     background-color: #000000;
     overflow: hidden;/*    margin-top: 6px;*/
 }
 
-.bottomTitleLine{
-    margin-top: 1px;
+.bottomTitleLines{
+    margin-top: 2px;
     margin-bottom: 4px;
     position: relative;
-    width: 100%;
+    width: 98%;
     height: 1px;
     z-index: 2;
     background-color: #000000;
@@ -58,8 +63,8 @@
 pre{
     margin-left:1%;
     width:98%;
-    height:78%;
-    min-height: ;
+/*    height:78%;*/
+    min-height: 0px;
     margin-top: 0px;
     margin-bottom: 0px;
 /*    min-height: 128px;*/

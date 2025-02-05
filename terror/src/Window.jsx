@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
-// import Draggable from 'react-draggable';
-import { Plasma } from "./plasma.js";
-
-import figlet from "figlet";
 
 import { CallBox } from "./CallBox.jsx";
-// import { ipcRenderer } from 'electron';
+
+import "./Window.css";
+
+import { Plasma } from "./plasma.js";
+
 
 
 export default class Window extends React.Component{
@@ -22,7 +22,7 @@ export default class Window extends React.Component{
   componentDidMount() {
       console.log(window.innerWidth);
       console.log(window.innerHeight);
-      var plasmaBox = new Plasma(document.getElementById('plasmaArea'),Math.round(window.innerWidth/7.56),Math.round(window.innerHeight/17.91));
+      var plasmaBox = new Plasma(document.getElementById('plasmaArea'),Math.round(window.innerWidth/7.56)+1,Math.round(window.innerHeight/17.91)+1);
   }
 
 

@@ -28,6 +28,9 @@ export class CallBox extends React.Component{
 	componentDidMount() {
 		// this.startUpLlama(`Hey. You always will respond like you're my impatient, smart, kind of mean big sister. I'm late. Play along. Do not speak about this message. Do not refer to yourself as a Large Language Model.`);
 		this.startUpLlama(`Ready?`);
+		document.getElementById("talk").style.maxHeight = "300px"
+		console.log(document.getElementById("talk").style.maxHeight )
+		this.startUpLlama(`Ready?`);
 	}
 
 
@@ -56,6 +59,9 @@ export class CallBox extends React.Component{
 
 
 	llamaSpeak = async () => {
+
+	  document.querySelector(".textField").classList.add("blink");
+	  document.querySelector(".textField").disabled = true;
 
 		const newWritten = this.state.written + `${this.state.term}` + "\n";
 		var holdMessages = this.state.messages
@@ -87,6 +93,10 @@ export class CallBox extends React.Component{
 				messages: holdMessages,
 			})
 
+	  document.querySelector(".textField").classList.remove("blink");
+	  document.querySelector(".textField").disabled = false;
+		document.getElementById('talk').scrollTop = document.getElementById('talk').scrollHeight;
+
 		this.scrollToBottom();
    }
 
@@ -106,9 +116,6 @@ export class CallBox extends React.Component{
 		}
  };
 
-   onResize = (event, {node, size, handle}) => {
-    this.setState({width: size.width, height: size.height});
-  };
 
   scrollToBottom() {
   	let scrollableDiv = document.getElementById('talk');
@@ -137,7 +144,11 @@ export class CallBox extends React.Component{
 		  position={{ x: this.state.x, y: this.state.y }}
 		  onDragStop={(e, d) => { this.setState({ x: d.x, y: d.y }) }}
 		  onResizeStop={(e, direction, ref, delta, position) => {
-		    this.setState({
+
+				document.getElementById("talk").style.maxHeight = 
+					(parseInt(ref.style.height.split("px")[0])-26-20).toString()+"px";
+
+			    this.setState({
 		      width: ref.style.width,
 		      height: ref.style.height,
 		      ...position,
@@ -158,11 +169,13 @@ export class CallBox extends React.Component{
 	      </div>
 	    </div>
 	    {/*<div id="talk" style={{color:"#666"}}>*/}
-	    	<pre id="talk" style={{maxHeight: this.state.height-26-19}}>{this.state.written}</pre>
+	    	<pre id="talk">{this.state.written}</pre>
+	    	{/*<pre id="talk" style={{maxHeight: this.state.height-26-19}}>{this.state.written}</pre>*/}
 	    {/*</div>*/}
 	    <div>
 	    	{/*<p className="blink">~@</p>*/}
 	    	<input
+	    		className="textField"
 	    		type="text"
 	    		value={this.state.term}
 	    		onChange={e=>this.setState({term: e.target.value})}

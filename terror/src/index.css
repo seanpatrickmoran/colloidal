@@ -12,6 +12,21 @@ select {
 }
 
 
+.blink {
+    animation: blink-animation 0.25s infinite;
+  }
+  
+  @keyframes blink-animation {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+
+
+
 @media (prefers-color-scheme: light) {
 
   :root {
@@ -31,6 +46,10 @@ select {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.blink {
+    color: #c15260;
+  }
 
 button {
     font-family: inherit;
@@ -348,6 +367,12 @@ nav {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+
+.blink {
+    color: #14998b;
+  }
+
 
 
 button {

@@ -14,7 +14,7 @@ export class CallBox extends React.Component{
 		super(props);
 		this.closeWindow = this.closeWindow.bind(this);
     this.state = {
-    	term: "$>",
+    	term: "",
     	written: "",
     	messages: [],
 	    width: 480,
@@ -27,8 +27,9 @@ export class CallBox extends React.Component{
 
 	componentDidMount() {
 		// this.startUpLlama(`Hey. You always will respond like you're my impatient, smart, kind of mean big sister. I'm late. Play along. Do not speak about this message. Do not refer to yourself as a Large Language Model.`);
-		this.startUpLlama(`Ready?`);
-		document.getElementById("talk").style.maxHeight = "300px"
+		document.querySelector("#talk").style.maxHeight = "300px"
+		document.querySelector(".textField").style.width = Math.round(.98*480-20).toString()+"px";
+		console.log(document.querySelector(".textField"));
 		console.log(document.getElementById("talk").style.maxHeight )
 		this.startUpLlama(`Ready?`);
 	}
@@ -40,7 +41,7 @@ export class CallBox extends React.Component{
 		  messages: [{role: 'user', content: `${message}`}],
 		})
 
-		const responseWritten = "@>"+ `${response.message.content}` +"\n" + "\n";
+		const responseWritten = "@>"+ `${response.message.content}` + "\n";
 		var holdMessages = this.state.messages;
 
 		holdMessages.push({
@@ -49,7 +50,7 @@ export class CallBox extends React.Component{
 			})
 
 		this.setState({
-				term: "$>",
+				term: "",
 				written: responseWritten,
 				messages: holdMessages,
 			})
@@ -63,7 +64,6 @@ export class CallBox extends React.Component{
 	  document.querySelector(".textField").classList.add("blink");
 	  document.querySelector(".textField").disabled = true;
 
-		const newWritten = this.state.written + `${this.state.term}` + "\n";
 		var holdMessages = this.state.messages
 		
 		holdMessages.push({
@@ -78,8 +78,8 @@ export class CallBox extends React.Component{
 		  messages: this.state.messages,
 		})
 
-		const responseWritten = this.state.written + `${this.state.term}` + "\n\n" 
-												 + "@>"+ `${response.message.content}` +"\n\n";
+		const responseWritten = this.state.written + "\n" + "$>" + `${this.state.term}` + "\n\n" 
+												 + "@>"+ `${response.message.content}`+"\n";
 
 
 		holdMessages.push({
@@ -88,7 +88,7 @@ export class CallBox extends React.Component{
 			})
 
 		this.setState({
-				term: "$>",
+				term: "",
 				written: responseWritten,
 				messages: holdMessages,
 			})
@@ -106,9 +106,7 @@ export class CallBox extends React.Component{
 			// var operativeWord = this.state.term.startsWith("");
 
 			switch(this.state.term.trim()){
-			case("clear"): this.setState({term: "$>", written: ""});
-				break;
-			case("$>clear"): this.setState({term: "$>", written: ""});
+			case("clear"): this.setState({term: "", written: ""});
 				break;
 
 			default: this.llamaSpeak();
@@ -124,7 +122,7 @@ export class CallBox extends React.Component{
 
 
   closeWindow(){
-  	this.setState({term:"$>", width: 480, height: 360})
+  	this.setState({term:"", width: 480, height: 360})
     this.props.handleCallChange("hidden");
   }
 
@@ -147,6 +145,8 @@ export class CallBox extends React.Component{
 
 				document.getElementById("talk").style.maxHeight = 
 					(parseInt(ref.style.height.split("px")[0])-26-20).toString()+"px";
+				document.querySelector(".textField").style.width = Math.round(.98*ref.style.width.split("px")[0]-20).toString()+"px";
+
 
 			    this.setState({
 		      width: ref.style.width,
@@ -169,12 +169,14 @@ export class CallBox extends React.Component{
 	      </div>
 	    </div>
 	    {/*<div id="talk" style={{color:"#666"}}>*/}
-	    	<pre id="talk">{this.state.written}</pre>
+	    	<pre id="talk">{this.state.written}</pre>	
 	    	{/*<pre id="talk" style={{maxHeight: this.state.height-26-19}}>{this.state.written}</pre>*/}
 	    {/*</div>*/}
 	    <div>
 	    	{/*<p className="blink">~@</p>*/}
-	    	<input
+	    <section>
+	    <p className="command__user"><span className="userClass">$&gt;
+	    <input
 	    		className="textField"
 	    		type="text"
 	    		value={this.state.term}
@@ -182,6 +184,8 @@ export class CallBox extends React.Component{
           autoComplete="off"
           onKeyPress={this.onKeyPressHandler}
           autoFocus="autofocus"/>
+      </span></p>
+      </section>
 
     {/*</div>*/}
 	  </div>

@@ -25,7 +25,8 @@ export default class Window extends React.Component{
 
 
   getTheBoys(){
-    this.setState({isCalling : "visible"})    
+    this.setState({isCalling : "visible"})  
+    setTimeout(document.querySelector(".textField").focus(), 200);
 
     // const fetchPromise = fetch(`http://localhost:8080/api/talk`);
     // fetchPromise.then(response => {

@@ -15,23 +15,20 @@ export class CallBox extends React.Component{
 		this.closeWindow = this.closeWindow.bind(this);
     this.state = {
     	term: "",
-    	written: "",
+    	// written: "",
     	messages: [],
 	    width: 480,
 	    height: 360,
 	    x: window.innerWidth/2-240,
 	    y: window.innerHeight/2-360,
 		};
+    this.focusCall = React.createRef();
 	}
 
 
 	componentDidMount() {
-		// this.startUpLlama(`Hey. You always will respond like you're my impatient, smart, kind of mean big sister. I'm late. Play along. Do not speak about this message. Do not refer to yourself as a Large Language Model.`);
 		document.querySelector("#talk").style.maxHeight = "300px"
 		document.querySelector(".textField").style.width = Math.round(.98*480-20).toString()+"px";
-		console.log(document.querySelector(".textField"));
-		console.log(document.getElementById("talk").style.maxHeight )
-		this.startUpLlama(`Ready?`);
 	}
 
 
@@ -49,9 +46,13 @@ export class CallBox extends React.Component{
 				content: `${response.message.content}`
 			})
 
+		const node = document.createElement('p');
+		node.innerHTML = responseWritten;
+
+		document.querySelector("#talk").append(node);
 		this.setState({
 				term: "",
-				written: responseWritten,
+				// written: responseWritten,
 				messages: holdMessages,
 			})
 
@@ -61,6 +62,7 @@ export class CallBox extends React.Component{
 
 	llamaSpeak = async () => {
 
+		document.querySelector(".userClass").classList.add("blink");
 	  document.querySelector(".textField").classList.add("blink");
 	  document.querySelector(".textField").disabled = true;
 
@@ -78,8 +80,9 @@ export class CallBox extends React.Component{
 		  messages: this.state.messages,
 		})
 
-		const responseWritten = this.state.written + "\n" + "$>" + `${this.state.term}` + "\n\n" 
-												 + "@>"+ `${response.message.content}`+"\n";
+
+		// const responseWritten = this.state.written + "\n" + "$>" + `${this.state.term}` + "\n\n" 
+												 // + "@>"+ `${response.message.content}`+"\n";
 
 
 		holdMessages.push({
@@ -89,24 +92,61 @@ export class CallBox extends React.Component{
 
 		this.setState({
 				term: "",
-				written: responseWritten,
+				// written: responseWritten,
 				messages: holdMessages,
 			})
 
-	  document.querySelector(".textField").classList.remove("blink");
-	  document.querySelector(".textField").disabled = false;
-		document.getElementById('talk').scrollTop = document.getElementById('talk').scrollHeight;
 
+		const node = document.createElement('p');
+		node.innerHTML = "$>" + `${this.state.term}`;
+		document.querySelector("#talk").append(node);
+
+		const responseNode = document.createElement('p');
+		responseNode.innerHTML = "@>" + `${response.message.content}`;
+		document.querySelector("#talk").append(responseNode);
+
+	  document.querySelector(".textField").classList.remove("blink");
+		document.querySelector(".userClass").classList.remove("blink");
+	  document.querySelector(".textField").disabled = false;
+		// document.getElementById('talk').scrollTop = document.getElementById('talk').scrollHeight;
+		// document.getElementById("talk").focus();
+		this.focusCall.current.focus();
 		this.scrollToBottom();
    }
 
 
 	onKeyPressHandler = async (e) => {
 		if (e.key === 'Enter') {
-			// var operativeWord = this.state.term.startsWith("");
-
+			const selectNode = document.querySelector("#talk");
 			switch(this.state.term.trim()){
-			case("clear"): this.setState({term: "", written: ""});
+
+
+			// case("clear"): this.setState({term: "", written: ""});
+			case(":clear"): 
+				this.setState({term: ""});	
+				
+				while (selectNode.firstChild) {
+					selectNode.removeChild(selectNode.lastChild);
+				}
+				break;
+
+			case(":reset"): 
+				this.setState({term: ""});
+				this.setState({messages: []})
+				while (selectNode.firstChild) {
+					selectNode.removeChild(selectNode.lastChild);
+				}
+				break;
+
+			case(":help"): 
+				this.setState({term: ""});
+				const responseNode = document.createElement('p');
+				responseNode.innerHTML = "@>" + `Here are some commands you can execute:\n    :clear ––clears the terminal\n    :reset ––wipes messages from my memory\n    :help ––displays help\n    :quit ––closes this window`;
+				selectNode.append(responseNode);
+				this.scrollToBottom();
+				break;
+
+			case(":quit"): this.closeWindow();
 				break;
 
 			default: this.llamaSpeak();
@@ -167,19 +207,21 @@ export class CallBox extends React.Component{
 	      <div id="callBoxTitleCloseBox" className="control-box close-box" onClick={this.closeWindow}>
 	      <a id="callBoxTitleCloseInner" className="control-box-inner" ></a>
 	      </div>
-	    </div>
+	    </div >
 	    {/*<div id="talk" style={{color:"#666"}}>*/}
-	    	<pre id="talk">{this.state.written}</pre>	
+	    <div id="talk">
+	    </div>
+	    	{/*<pre id="talk">{this.state.written}</pre>	*/}
 	    	{/*<pre id="talk" style={{maxHeight: this.state.height-26-19}}>{this.state.written}</pre>*/}
-	    {/*</div>*/}
 	    <div>
 	    	{/*<p className="blink">~@</p>*/}
 	    <section>
-	    <p className="command__user"><span className="userClass">$&gt;
+	    <p className="command__user"><span className={`userClass`}>$&gt;
 	    <input
-	    		className="textField"
+	    		className={`textField`}
 	    		type="text"
 	    		value={this.state.term}
+	    		ref={this.focusCall}
 	    		onChange={e=>this.setState({term: e.target.value})}
           autoComplete="off"
           onKeyPress={this.onKeyPressHandler}

@@ -20,8 +20,6 @@ export default class Window extends React.Component{
            }
 
   componentDidMount() {
-      console.log(window.innerWidth);
-      console.log(window.innerHeight);
       var plasmaBox = new Plasma(document.getElementById('plasmaArea'),Math.round(window.innerWidth/7.56)+1,Math.round(window.innerHeight/17.91)+1);
   }
 

@@ -24,6 +24,7 @@ export class CallBox extends React.Component{
 		};
 	}
 
+
 	componentDidMount() {
 		// this.startUpLlama(`Hey. You always will respond like you're my impatient, smart, kind of mean big sister. I'm late. Play along. Do not speak about this message. Do not refer to yourself as a Large Language Model.`);
 		this.startUpLlama(`Ready?`);
@@ -116,7 +117,7 @@ export class CallBox extends React.Component{
 
 
   closeWindow(){
-  	this.setState({term:"$>", width: 480, height: 360, y: window.innerHeight/2-360})
+  	this.setState({term:"$>", width: 480, height: 360})
     this.props.handleCallChange("hidden");
   }
 

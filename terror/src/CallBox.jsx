@@ -15,7 +15,8 @@ export class CallBox extends React.Component{
 		this.closeWindow = this.closeWindow.bind(this);
     this.state = {
     	term: "",
-    	// written: "",
+    	userMessagePointer: 0,
+    	userMessages: [],
     	messages: [],
 	    width: 480,
 	    height: 360,
@@ -118,6 +119,11 @@ export class CallBox extends React.Component{
 	onKeyPressHandler = async (e) => {
 		if (e.key === 'Enter') {
 			const selectNode = document.querySelector("#talk");
+			var pushUser = this.state.userMessages;
+			pushUser.push(this.state.term);
+
+			this.setState({userMessages: pushUser});
+			this.setState({userMessagePointer: pushUser.length})
 			switch(this.state.term.trim()){
 
 
@@ -138,10 +144,16 @@ export class CallBox extends React.Component{
 				}
 				break;
 
+			case(":purge"): 
+				this.setState({term: ""});
+				this.setState({messages: []})
+				this.setState({userMessagePointer: 0, userMessages: [""]});
+				break;
+
 			case(":help"): 
 				this.setState({term: ""});
 				const responseNode = document.createElement('p');
-				responseNode.innerHTML = "@>" + `Here are some commands you can execute:\n    :clear ––clears the terminal\n    :reset ––wipes messages from my memory\n    :help ––displays help\n    :quit ––closes this window`;
+				responseNode.innerHTML = "@>" + `Here are some commands you can execute:\n    :clear ––clears the terminal\n    :purge ––removes terminal history\n    :reset ––wipes messages from my memory\n    :help ––displays help\n    :quit ––closes this window`;
 				selectNode.append(responseNode);
 				this.scrollToBottom();
 				break;
@@ -149,10 +161,44 @@ export class CallBox extends React.Component{
 			case(":quit"): this.closeWindow();
 				break;
 
-			default: this.llamaSpeak();
+			default: 
+				this.llamaSpeak();
 			}
-		}
- };
+		} else if (e.key === 'ArrowUp'){
+			if (this.state.userMessagePointer-1>=0 &&  this.state.userMessages.length!=0){
+				this.setState({
+					term: this.state.userMessages[this.state.userMessagePointer-1]
+					})
+				this.setState({userMessagePointer: this.state.userMessagePointer-1})
+			}
+
+ 		} else if (e.key === 'ArrowDown'){
+			if (this.state.userMessagePointer+1<this.state.userMessages.length){
+				this.setState({
+					term: this.state.userMessages[this.state.userMessagePointer+1]
+					})
+				this.setState({userMessagePointer: this.state.userMessagePointer+1})
+			}
+
+			else{
+				this.setState({term: ""})
+			}
+ 	}
+
+};
+
+
+
+// //implement history. 
+//  keyDownHandler = async (e) => {
+//  	if (e.key === 'ArrowUp'){
+
+//  	}
+//  	else if (e.key === 'ArrowDown'){
+
+//  	}
+//  }
+
 
 
   scrollToBottom() {
@@ -203,7 +249,7 @@ export class CallBox extends React.Component{
 	      <div className="titleLines"></div>
 	      <div className="titleLines"></div>
 	      <div className="bottomTitleLines"></div>
-	      <div id="callBoxTitleHandle" className="callTitle">CALL</div>
+	      <div id="callBoxTitleHandle" className="callTitle"> @&gt; </div>
 	      <div id="callBoxTitleCloseBox" className="control-box close-box" onClick={this.closeWindow}>
 	      <a id="callBoxTitleCloseInner" className="control-box-inner" ></a>
 	      </div>
@@ -224,7 +270,7 @@ export class CallBox extends React.Component{
 	    		ref={this.focusCall}
 	    		onChange={e=>this.setState({term: e.target.value})}
           autoComplete="off"
-          onKeyPress={this.onKeyPressHandler}
+          onKeyDown={this.onKeyPressHandler}
           autoFocus="autofocus"/>
       </span></p>
       </section>
